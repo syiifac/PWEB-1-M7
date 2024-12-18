@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Pemesanan</title>
+<style> body {
+ 
+font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0;
+padding: 0; display: flex;
+justify-content: center; align-items: center; height: 100vh;
+}
+.form-container { background: white; padding: 20px 30px; border-radius: 10px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+width: 100%;
+max-width: 500px;
+}
+.form-container h2 { text-align: center; margin-bottom: 20px;
+}
+.form-container label { font-weight: bold; display: block; margin-bottom: 5px;
+}
+.form-container input,
+.form-container select,
+.form-container button { width: 100%;
+padding: 10px; margin-bottom: 15px;
+border: 1px solid #ccc; border-radius: 5px; font-size: 14px;
+}
+.form-container input[type="checkbox"] { width: auto;
+margin-right: 10px;
+}
+.form-container button { background-color: #28a745; color: white;
+border: none; cursor: pointer; font-size: 16px;
+}
+.form-container button:hover {
+ 
+background-color: #218838;
+}
+.resume-container { margin-top: 20px; background-color: #ffffff; padding: 20px;
+border-radius: 10px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.resume-container h3 { text-align: center; margin-bottom: 15px;
+}
+</style>
+</head>
+<body>
+<div class="form-container">
+<h2>Form Pemesanan</h2>
+<form id="formPemesanan" onsubmit="return hitungTotalBayar()">
+<label for="namaPemesan">Nama Pemesan</label>
+<input type="text" id="namaPemesan" placeholder="Masukkan nama pemesan" required />
+
+<label for="jenisKelamin">Jenis Kelamin</label>
+<select id="jenisKelamin" required>
+<option value="">-- Pilih Jenis Kelamin --</option>
+<option value="Laki-Laki">Laki-Laki</option>
+<option value="Perempuan">Perempuan</option>
+</select>
+
+<label for="nomorIdentitas">Nomor Identitas</label>
+<input type="text" id="nomorIdentitas" placeholder="Masukkan nomor identitas (16 digit)" maxlength="16" required />
+
+<label for="tipeKamar">Tipe Kamar</label>
+<select id="tipeKamar" onchange="updateHarga()" required>
+<option value="">-- Pilih Tipe Kamar --</option>
+<option value="Standar">Standar</option>
+<option value="Deluxe">Deluxe</option>
+<option value="Family">Family</option>
+</select>
+
+<label for="harga">Harga (per malam)</label>
+<input type="text" id="harga" readonly />
+
+<label for="tanggalPesan">Tanggal Pesan</label>
+<input type="date" id="tanggalPesan" required />
+ 
+<label for="durasiMenginap">Durasi Menginap (Hari)</label>
+<input type="number" id="durasiMenginap" placeholder="Masukkan jumlah hari" min="1" required />
+
+<label>
+<input type="checkbox" id="breakfast" /> Termasuk Breakfast (+80,000)
+</label>
+
+<label for="totalBayar">Total Bayar</label>
+<input type="text" id="totalBayar" readonly />
+
+<button type="submit">Simpan</button>
+</form>
+
+<div id="resumePemesanan" class="resume-container" style="display: none;">
+<h3>Resume Pemesanan</h3>
+<p><strong>Nama	Pemesan:</strong>	<span id="resumeNamaPemesan"></span></p>
+<p><strong>Nomor	Identitas:</strong>	<span id="resumeNomorIdentitas"></span></p>
+<p><strong>Jenis	Kelamin:</strong>	<span id="resumeJenisKelamin"></span></p>
+<p><strong>Tipe Kamar:</strong> <span id="resumeTipeKamar"></span></p>
+<p><strong>Durasi	Menginap:</strong>	<span	id="resumeDurasi"></span> hari</p>
+<p><strong>Diskon:</strong> <span id="resumeDiskon"></span>%</p>
+<p><strong>Total	Bayar:</strong>	Rp	<span id="resumeTotalBayar"></span></p>
+</div>
+</div>
+
+<script>
+function updateHarga() {
+const tipeKamar = document.getElementById('tipeKamar').value; const hargaField = document.getElementById('harga');
+
+let harga = 0;
+if (tipeKamar === 'Standar') harga = 500000; else if (tipeKamar === 'Deluxe') harga = 700000;
+else if (tipeKamar === 'Family') harga = 1000000;
+
+hargaField.value = harga.toLocaleString('id-ID');
+}
+
+function hitungTotalBayar() {
+const namaPemesan = document.getElementById('namaPemesan').value.trim(); const jenisKelamin = document.getElementById('jenisKelamin').value;
+const nomorIdentitas = document.getElementById('nomorIdentitas').value.trim();
+ 
+const tipeKamar = document.getElementById('tipeKamar').value;
+const harga = parseInt(document.getElementById('harga').value.replace(/\./g, ''), 10);
+const	durasiMenginap	= parseInt(document.getElementById('durasiMenginap').value, 10);
+const breakfast = document.getElementById('breakfast').checked;
+
+if (isNaN(nomorIdentitas) || nomorIdentitas.length !== 16) { alert('Nomor identitas harus berupa angka 16 digit');
+return false;
+}
+
+if	(!namaPemesan	||	!jenisKelamin	||	!tipeKamar	||	isNaN(harga)	|| isNaN(durasiMenginap)) {
+alert('Harap lengkapi semua data'); return false;
+}
+
+let totalBayar = harga * durasiMenginap; let diskon = 0;
+
+if (durasiMenginap > 3) { diskon = 10;
+totalBayar *= 0.9;
+}
+
+if (breakfast) { totalBayar += 80000;
+}
+
+document.getElementById('totalBayar').value	=	totalBayar.toLocaleString('id- ID');
+
+// Tampilkan data resume document.getElementById('resumeNamaPemesan').innerText = namaPemesan; document.getElementById('resumeNomorIdentitas').innerText = nomorIdentitas; document.getElementById('resumeJenisKelamin').innerText = jenisKelamin; document.getElementById('resumeTipeKamar').innerText = tipeKamar; document.getElementById('resumeDurasi').innerText = durasiMenginap; document.getElementById('resumeDiskon').innerText = diskon; document.getElementById('resumeTotalBayar').innerText	=
+totalBayar.toLocaleString('id-ID'); document.getElementById('resumePemesanan').style.display = 'block';
+return false;
+}
+</script>
+ 
+</body>
+</html>
+

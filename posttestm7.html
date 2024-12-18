@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Anggota</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Data Anggota</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Kode Anggota</th>
+                    <th>NIM</th>
+                    <th>Nama Lengkap</th>
+                    <th>Prodi</th>
+                    <th>Kelas</th>
+                    <th>Jenis Kelamin</th>
+                    <th>No Telpon</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Detail Anggota</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Contoh data anggota (ganti dengan data dari database Anda)
+        const anggota = [
+            { kode: 'A001', nim: '12345', nama: 'Syifa Cahya', prodi: 'Informatika', kelas: 'D', jenisKelamin: 'Perempuan', noTelp: '081234567890', foto: 'foto1.jpg', alamat: 'Jl. Contoh 1' },
+            // Tambahkan data anggota lainnya di sini
+        ];
+
+        // Fungsi untuk menampilkan data anggota ke dalam tabel
+        function tampilkanDataAnggota() {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            anggota.forEach(anggota => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${anggota.kode}</td>
+                    <td>${anggota.nim}</td>
+                    <td>${anggota.nama}</td>
+                    <td>${anggota.prodi}</td>
+                    <td>${anggota.kelas}</td>
+                    <td>${anggota.jenisKelamin}</td>
+                    <td>${anggota.noTelp}</td>
+                    <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#detailModal" data-kode="${anggota.kode}">Detail</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Fungsi untuk menampilkan detail anggota dalam modal
+        function tampilkanDetailAnggota(kode) {
+            const anggotaDetail = anggota.find(a => a.kode === kode);
+            const modalBody = document.querySelector('.modal-body');
+            modalBody.innerHTML = `
+                <img src="${anggotaDetail.foto}" alt="${anggotaDetail.nama}" class="img-fluid mb-3">
+                <p><strong>Nama:</strong> ${anggotaDetail.nama}</p>
+                <p><strong>Prodi:</strong> ${anggotaDetail.prodi}</p>
+                `;
+        }
+
+        // Panggil fungsi untuk menampilkan data saat halaman dimuat
+        tampilkanDataAnggota();
+
+        // Event listener untuk tombol detail
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('btn-primary')) {
+                const kode = event.target.dataset.kode;
+                tampilkanDetailAnggota(kode);
+            }
+        });
+    </script>
+</body>
+</html>
